@@ -7,7 +7,11 @@ self.props = {
 	auth: false,
 	user: '',
 	pass: '',
-	upload: false
+	upload: false,
+    export_url: false,
+    download_aria2: false,
+    copy_on_forbidden: false,
+    copy_parent_id: ''
 };
 (function () {
   'use strict';
