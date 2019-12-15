@@ -334,7 +334,7 @@ export default {
 	},
 	components: {
 		FileUploadDialog,
-		UrlExportDialog
+		UrlExportDialog,
 		Aria2DownloadDialog,
 		Aria2SettingsDialog
 	}
