@@ -15,6 +15,14 @@ export default {
 	serverProcessing: 'Server is processing the file now',
 	bigFileUploadWarning:
 		"Due to CloudFlare Workers' limitation, uploading bigfiles may randomly failed.",
+	exportUrl: 'Export Download Urls',
+	exportUrlIncludeSubFolders: 'Include sub-folders',
+	exportUrlIncludeFileName: 'Include filenames',
+	exportUrlFetchingFiles:
+		'Fetching files, remaining {remainingFolderCount} folders',
+	exportUrlFetchFileFailed: 'Fetch failed, reason: {reason}',
+	exportUrlStats:
+		'{fileCount} files in {folderCount} folders, total size: {totalDownloadSize}',
 	aria2Download: 'Download with Aria2',
 	aria2DownloadRecursive: 'Recursive download subfolders',
 	aria2FetchingFiles:

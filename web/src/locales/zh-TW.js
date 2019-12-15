@@ -17,7 +17,13 @@ export default {
 	serverProcessing: '伺服器正在處理檔案',
 	bigFileUploadWarning:
 		'由於 CloudFlare Workers 的限制，上傳大檔案可能會隨機失敗',
-	$vuetify,
+	exportUrl: '導出下載鏈接',
+	exportUrlIncludeSubFolders: '包含子檔案夾',
+	exportUrlIncludeFileName: '導出檔案名',
+	exportUrlFetchingFiles: '獲取檔案中，還剩 {remainingFolderCount} 個檔案夾',
+	exportUrlFetchFileFailed: '獲取檔案失敗，原因：{reason}',
+	exportUrlStats:
+		'{folderCount} 個檔案夾，{fileCount} 個檔案，總大小 {totalDownloadSize}',
 	aria2Download: '使用 Aria2 下載',
 	aria2DownloadRecursive: '包含子檔案夾',
 	aria2FetchingFiles:
@@ -37,5 +43,6 @@ export default {
 	aria2TestConnection: '測試連接',
 	aria2Testing: '正在嘗試連接',
 	aria2TestFailed: '連接失敗，原因：{reason}',
-	aria2TestSucceed: '連接成功，Aria2 版本：{version}'
+	aria2TestSucceed: '連接成功，Aria2 版本：{version}',
+	$vuetify,
 }

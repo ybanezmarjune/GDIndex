@@ -27,6 +27,7 @@
 					color="primary"
 					@click="showUploadDialog = true"
 				></v-btn>
+				<UrlExportDialog :path="path" :rootId="rootId" />
 				<Aria2DownloadDialog :path="path" :rootId="rootId" />
 				<Aria2SettingsDialog />
 			</v-col>
@@ -88,6 +89,7 @@ import api from '../api'
 import ImageViewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import FileUploadDialog from './FileUploadDialog'
+import UrlExportDialog from './UrlExportDialog'
 import Aria2DownloadDialog from './Aria2DownloadDialog'
 import Aria2SettingsDialog from './Aria2SettingsDialog'
 
@@ -161,7 +163,8 @@ export default {
 			rootId: '',
 			renderStart: null,
 			uploadEnabled: window.props.upload,
-			showUploadDialog: false
+			showUploadDialog: false,
+			rootId: ''
 		}
 	},
 	computed: {
@@ -331,6 +334,7 @@ export default {
 	},
 	components: {
 		FileUploadDialog,
+		UrlExportDialog
 		Aria2DownloadDialog,
 		Aria2SettingsDialog
 	}
@@ -369,7 +373,6 @@ export default {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-
 #actions > button {
 	margin-right: 10px;
 }
