@@ -41,7 +41,27 @@ async function onGet(request) {
 		}
 		const isGoogleApps = result.mimeType.includes('vnd.google-apps')
 		if (!isGoogleApps) {
-			const r = await gd.download(result.id, request.headers.get('Range'))
+			let r
+			try {
+				r = await gd.download(result.id, request.headers.get('Range'))
+			} catch (e) {
+				if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
+					// try copy file
+					const copiedFile = await gd.copy(result.id, self.props.copy_parent_id)
+					r = await gd.download(copiedFile.id, request.headers.get('Range'))
+				} else {
+					// other error, return it
+					return new Response(
+						{
+							error: e
+						},
+						{
+							status: r.status
+						}
+					)
+				}
+			}
+
 			const h = new Headers(r.headers)
 			h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`)
 			return new Response(r.body, {
@@ -102,9 +122,14 @@ async function onPut(request) {
 		const u = new URL(url)
 		const Referer = u.href
 		const Origin = u.protocol + '//' + u.host
-		fileBody = (await fetch(url, {
-			headers: { Referer, Origin }
-		})).body
+		fileBody = (
+			await fetch(url, {
+				headers: {
+					Referer,
+					Origin
+				}
+			})
+		).body
 	} else {
 		fileBody = request.body
 	}
@@ -118,6 +143,7 @@ async function onPut(request) {
 		}
 	})
 }
+
 function unauthorized() {
 	return new Response('Unauthorized', {
 		headers: {
@@ -127,6 +153,7 @@ function unauthorized() {
 		status: 401
 	})
 }
+
 function parseBasicAuth(auth) {
 	try {
 		return atob(auth.split(' ').pop()).split(':')
@@ -134,6 +161,7 @@ function parseBasicAuth(auth) {
 		return []
 	}
 }
+
 function doBasicAuth(request) {
 	const auth = request.headers.get('Authorization')
 	if (!auth || !/^Basic [A-Za-z0-9._~+/-]+=*$/i.test(auth)) {

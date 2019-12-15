@@ -22,6 +22,7 @@
 -   Support Http Basic Auth
 -   Support multiple drives(personal, team) without changing server's code
 -   Support exporting file urls
+-   Support Aria2 download
 
 ## Usage
 
@@ -46,3 +47,37 @@ Go [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch
     export_url: true
     ```
 2. Redeploy
+
+### Enabling download with Aria2
+
+1. Add config `download_aria2: true` to your `worker.js`:
+    ```
+	default_root_id: '...',
+	client_id: '...',
+	client_secret: '...',
+	refresh_token: '...',
+    ...
+	download_aria2: true
+    ```
+2. Redeploy, now you should see "Download with Aria2" and "Aria2 RPC Settings" beyond file list
+3. Fill your aria2 connection info in "Aria2 RPC Settings"
+4. Go to where you want to download and click "Download with aria2", which will add downloads for you!
+
+### Enabling file copy on forbidden
+
+Google Drive limited each users' file sharing bandwidth(about 750GB per day). If you try pulling a shared file from who exceed this limit, you will receive a `403 - forbidden` error. Copying file to your may solve this problem, but it hurts because you can only copy a file once a time.
+
+That's why "Copy on forbidden" comes in.
+
+1. Create a folder, which will be used to store your copied files, crawl its id from network requests(normally you can get it from Developer Tools)
+2. Add following config to your `worker.js`:
+
+```
+  ...
+  copy_on_forbidden: true,
+  copy_parent_id: 'YOUR_COPY_FOLDER_ID' // replace YOUR_COPY_FOLDER_ID to your copy folder's ID
+```
+
+3. Just do normal download, if this file exceed limits, worker will make a copy and return copied one to you. This process is transparent so you won't need to deal other things.
+
+Note: Be sure to delete all you copied files after a while, as more files get copied, it will consumer more space on you drive. Besides, this feature will NOT detect existing copies, multiple downloads will leads multiple copies.

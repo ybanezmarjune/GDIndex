@@ -28,6 +28,8 @@
 					@click="showUploadDialog = true"
 				></v-btn>
 				<UrlExportDialog :path="path" :rootId="rootId" />
+				<Aria2DownloadDialog :path="path" :rootId="rootId" />
+				<Aria2SettingsDialog />
 			</v-col>
 		</v-row>
 		<v-row justify="center">
@@ -88,6 +90,8 @@ import ImageViewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import FileUploadDialog from './FileUploadDialog'
 import UrlExportDialog from './UrlExportDialog'
+import Aria2DownloadDialog from './Aria2DownloadDialog'
+import Aria2SettingsDialog from './Aria2SettingsDialog'
 
 const SUPPORTED_TYPES = {
 	'application/epub+zip': 'epub',
@@ -156,6 +160,7 @@ export default {
 					class: 'hidden-sm-and-down'
 				}
 			],
+			rootId: '',
 			renderStart: null,
 			uploadEnabled: window.props.upload,
 			showUploadDialog: false,
@@ -330,6 +335,8 @@ export default {
 	components: {
 		FileUploadDialog,
 		UrlExportDialog
+		Aria2DownloadDialog,
+		Aria2SettingsDialog
 	}
 }
 </script>
