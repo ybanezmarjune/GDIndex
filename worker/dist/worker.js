@@ -438,9 +438,26 @@ self.props = {
       return this.delete(id);
     }
 
+    async copy(fileId, parentId) {
+      this.initializeClient();
+
+      if (parentId) {
+        return this.client.post(`files/${fileId}/copy`, {
+          json: {
+            parents: [parentId]
+          }
+        }).json();
+      } else {
+        return this.client.post(`files/${fileId}/copy`, {
+          json: {}
+        }).json();
+      }
+    }
+
   }
 
   const gd = new GoogleDrive(self.props);
+  const resourceBaseUrl = self.props.resource_base_url || 'https://raw.githubusercontent.com/CodeingBoy/GDIndex/master/web/dist/';
   const HTML = `<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>${self.props.title}</title><link href="/~_~_gdindex/resources/css/app.css" rel=stylesheet></head><body><script>window.props = { title: '${self.props.title}', default_root_id: '${self.props.default_root_id}', api: location.protocol + '//' + location.host, upload: ${self.props.upload} }<\/script><div id=app></div><script src="/~_~_gdindex/resources/js/app.js"><\/script></body></html>`;
 
   async function onGet(request) {
@@ -451,7 +468,7 @@ self.props = {
 
     if (path.startsWith('/~_~_gdindex/resources/')) {
       const remain = path.replace('/~_~_gdindex/resources/', '');
-      const r = await fetch(`https://raw.githubusercontent.com/maple3142/GDIndex/master/web/dist/${remain}`);
+      const r = await fetch(`${resourceBaseUrl}${remain}`);
       return new Response(r.body, {
         headers: {
           'Content-Type': mime.getType(remain) + '; charset=utf-8',
@@ -485,7 +502,25 @@ self.props = {
       const isGoogleApps = result.mimeType.includes('vnd.google-apps');
 
       if (!isGoogleApps) {
-        const r = await gd.download(result.id, request.headers.get('Range'));
+        let r;
+
+        try {
+          r = await gd.download(result.id, request.headers.get('Range'));
+        } catch (e) {
+          if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
+            // try copy file
+            const copiedFile = await gd.copy(result.id, self.props.copy_parent_id);
+            r = await gd.download(copiedFile.id, request.headers.get('Range'));
+          } else {
+            // other error, return it
+            return new Response({
+              error: e
+            }, {
+              status: r.status
+            });
+          }
+        }
+
         const h = new Headers(r.headers);
         h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`);
         return new Response(r.body, {
