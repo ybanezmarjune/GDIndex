@@ -52,6 +52,9 @@
 						></v-switch>
 					</v-row>
 				</v-container>
+				<v-alert dense type="warning" v-if="shouldShowAriaHTTPSWarning">
+					{{ $t('aria2HTTPSWarning') }}
+				</v-alert>
 				<template>
 					<v-alert dense type="info" v-if="testStatus === 0">
 						{{ $t('aria2Testing') }}
@@ -86,6 +89,7 @@
 </template>
 <script>
 import aria2 from '../aria2'
+import util from '../util'
 
 export default {
 	data() {
@@ -100,10 +104,16 @@ export default {
 			downloadPath: '',
 			testStatus: -1,
 			testVersion: '',
-			testFailedReason: ''
+			testFailedReason: '',
+			shouldShowAriaHTTPSWarning: false
 		}
 	},
 	computed: {},
+	watch: {
+		rpcSecure: function(val) {
+			this.shouldShowAriaHTTPSWarning = util.usingHTTPS() && !val
+		}
+	},
 	methods: {
 		onShow: function() {
 			this.load()
@@ -116,6 +126,9 @@ export default {
 			this.rpcPath = aria2.getRpcPath()
 			this.rpcToken = aria2.getRpcToken()
 			this.downloadPath = aria2.getDownloadPath()
+
+			this.shouldShowAriaHTTPSWarning =
+				util.usingHTTPS() && !this.rpcSecure
 		},
 		save: function() {
 			aria2.setRpcHost(this.rpcHost)

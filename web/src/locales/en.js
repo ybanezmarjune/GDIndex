@@ -45,5 +45,8 @@ export default {
 	aria2TestConnection: 'Test Connection',
 	aria2Testing: 'Testing',
 	aria2TestFailed: 'Connect failed, reason: {reason}',
-	aria2TestSucceed: 'Connect succeed, version: {version}'
+	aria2TestSucceed: 'Connect succeed, version: {version}',
+	aria2HTTPSWarning: `You're using HTTPS while aria2 still using HTTP.
+		Due to browsers limitation, aria2's HTTP requests may be blocked.
+		You can request aria2 via HTTPS or disabling insecure content blocking.`
 }

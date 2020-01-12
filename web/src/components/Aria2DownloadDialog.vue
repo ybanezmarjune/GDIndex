@@ -73,6 +73,9 @@
 						{{ $t('aria2FetchFileFailed', { failReason }) }}
 					</v-alert>
 				</template>
+				<v-alert dense type="warning" v-if="shouldShowAriaHTTPSWarning">
+					{{ $t('aria2HTTPSWarning') }}
+				</v-alert>
 			</v-card-text>
 			<v-card-actions id="actions">
 				<v-btn
@@ -93,6 +96,7 @@ import nodePath from 'path'
 import prettyBytes from 'pretty-bytes'
 import aria2 from '../aria2'
 import api from '../api'
+import util from '../util'
 
 export default {
 	props: {
@@ -112,7 +116,8 @@ export default {
 			remainingFileCount: 0,
 			fetchRemainingFolderCount: 0,
 			status: 1,
-			failReason: ''
+			failReason: '',
+			shouldShowAriaHTTPSWarning: util.shouldShowAriaHTTPSWarning()
 		}
 	},
 	watch: {
