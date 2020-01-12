@@ -63,6 +63,19 @@ Go [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch
 3. Fill your aria2 connection info in "Aria2 RPC Settings"
 4. Go to where you want to download and click "Download with aria2", which will add downloads for you!
 
+#### Solving HTTPS connection issue
+
+While deployed on CloudFlare, the content(html and file info) will be served with HTTPS. However, you may connect your aria2 via HTTP. Fetching HTTP content within HTTPS page is not allowed by browsers. To bypass it, you can:
+
+- use HTTPS connection aria2 by signing certificate
+- allow 'Insecure content' in browser
+
+The latter is recommended. For Chrome, you can allow it by doing:
+
+1. Click the HTTPS lock on the left of URL
+2. Select "Site settings"
+3. Set "Insecure content" to "Allow"
+
 ### Enabling file copy on forbidden
 
 Google Drive limited each users' file sharing bandwidth(about 750GB per day). If you try pulling a shared file from who exceed this limit, you will receive a `403 - forbidden` error. Copying file to your may solve this problem, but it hurts because you can only copy a file once a time.
