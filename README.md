@@ -26,12 +26,6 @@
 
 ## Usage
 
-### Simple and automatic way
-
-Go [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch.me/), and follow its instructions.
-
-### Manual way
-
 1. Install [rclone](https://rclone.org/)
 2. Setup your Google Drive: https://rclone.org/drive/
 3. Run `rclone config file` to find your `rclone.conf` location

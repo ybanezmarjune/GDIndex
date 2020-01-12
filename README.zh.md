@@ -22,12 +22,6 @@
 
 ## 使用教学
 
-### 简单、自动的方法
-
-前往 [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch.me/)(英文) 并遵照它的指示。
-
-### 手动的方法
-
 1. 安装 [rclone](https://rclone.org/)
 2. 设定 Google Drive: https://rclone.org/drive/
 3. 执行 `rclone config file` 以找到你的 `rclone.conf`
