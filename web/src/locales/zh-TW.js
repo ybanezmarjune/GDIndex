@@ -5,6 +5,7 @@ export default {
 	modifiedTime: '修改時間',
 	fileSize: '檔案大小',
 	mainDrive: '主要硬碟',
+	rootDir: '根目錄',
 	search: '搜尋',
 	save: '保存',
 	cancel: '取消',

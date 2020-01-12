@@ -9,26 +9,38 @@
 				>
 			</v-toolbar-title>
 			<v-toolbar-items>
-				<v-menu offset-y v-if="drives.length">
-					<template v-slot:activator="{ on }">
-						<v-btn text v-on="on" class="text-none">
-							<v-icon>mdi-cloud</v-icon>&nbsp;{{
-								currentDrive.text
-							}}<v-icon>mdi-menu-down</v-icon>
-						</v-btn>
-					</template>
-					<v-list>
-						<v-list-item
-							v-for="(item, index) in drives"
-							:key="index.id"
-							@click="changeDrive(item.value)"
-						>
-							<v-list-item-title>{{
-								item.text
-							}}</v-list-item-title>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+				<template v-if="drives.length === 1">
+					<v-btn
+						text
+						class="text-none"
+						@click="changeDrive(drives[0].value)"
+					>
+						<v-icon>mdi-cloud</v-icon>
+						&nbsp;{{ $t('rootDir') }}
+					</v-btn>
+				</template>
+				<template v-else>
+					<v-menu offset-y v-if="drives.length > 1">
+						<template v-slot:activator="{ on }">
+							<v-btn text v-on="on" class="text-none">
+								<v-icon>mdi-cloud</v-icon>&nbsp;{{
+									currentDrive.text
+								}}<v-icon>mdi-menu-down</v-icon>
+							</v-btn>
+						</template>
+						<v-list>
+							<v-list-item
+								v-for="(item, index) in drives"
+								:key="index.id"
+								@click="changeDrive(item.value)"
+							>
+								<v-list-item-title>{{
+									item.text
+								}}</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
 			</v-toolbar-items>
 			<portal-target name="navbar" slim />
 			<v-spacer />

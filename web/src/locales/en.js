@@ -3,6 +3,7 @@ export default {
 	modifiedTime: 'Modified Time',
 	fileSize: 'File Size',
 	mainDrive: 'Main Drive',
+	rootDir: 'Root',
 	search: 'Search',
 	save: 'Save',
 	close: 'Close',

@@ -5,6 +5,7 @@ export default {
 	modifiedTime: '修改时间',
 	fileSize: '文件大小',
 	mainDrive: '主硬盘',
+	rootDir: '根目录',
 	search: '搜索',
 	save: '保存',
 	close: '关闭',
