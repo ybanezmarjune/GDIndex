@@ -29,7 +29,7 @@
 					</v-row>
 					<v-row>
 						<v-text-field
-							:label="$t('aria2RPCHost')"
+							:label="$t('aria2RPCPath')"
 							v-model="rpcPath"
 						></v-text-field>
 					</v-row>
