@@ -4,6 +4,7 @@ import Aria2 from 'aria2'
 
 const KEY_ARIA2_RPC_HOST = 'ARIA2_RPC_HOST'
 const KEY_ARIA2_RPC_PORT = 'ARIA2_RPC_PORT'
+const KEY_ARIA2_RPC_SECURE = 'ARIA2_RPC_SECURE'
 const KEY_ARIA2_RPC_PATH = 'ARIA2_RPC_PATH'
 const KEY_ARIA2_RPC_TOKEN = 'ARIA2_RPC_TOKEN'
 const KEY_ARIA2_DOWNLOAD_PATH = 'ARIA2_DOWNLOAD_PATH'
@@ -38,6 +39,12 @@ const aria2Support = {
 
 		return setStringToLocalStorage(KEY_ARIA2_RPC_PORT, port)
 	},
+	getRpcSecure: function() {
+		return getStringFromLocalStorage(KEY_ARIA2_RPC_SECURE, '0') !== '0'
+	},
+	setRpcSecure: function(enable) {
+		return setStringToLocalStorage(KEY_ARIA2_RPC_SECURE, enable ? '1' : '0')
+	},
 	getRpcPath: function() {
 		return getStringFromLocalStorage(KEY_ARIA2_RPC_PATH, '/jsonrpc')
 	},
@@ -56,15 +63,11 @@ const aria2Support = {
 	setDownloadPath: function(path) {
 		return setStringToLocalStorage(KEY_ARIA2_DOWNLOAD_PATH, path)
 	},
-	prepare: function() {
-		if (this.aria2) {
-			return
-		}
-
+	init: function() {
 		const options = {
 			host: this.getRpcHost(),
 			port: this.getRpcPort(),
-			secure: false,
+			secure: this.getRpcSecure(),
 			secret: this.getRpcToken(),
 			path: this.getRpcPath()
 		}
@@ -72,14 +75,14 @@ const aria2Support = {
 	},
 	test: async function() {
 		if (!this.aria2) {
-			this.prepare()
+			this.init()
 		}
 
 		return await this.aria2.call('getVersion')
 	},
 	addDownload: async function(url, downloadPath) {
 		if (!this.aria2) {
-			this.prepare()
+			this.init()
 		}
 		const option = {
 			dir: downloadPath

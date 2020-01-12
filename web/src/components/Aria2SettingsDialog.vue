@@ -45,6 +45,12 @@
 							v-model="downloadPath"
 						></v-text-field>
 					</v-row>
+					<v-row>
+						<v-switch
+							:label="$t('aria2RPCSecure')"
+							v-model="rpcSecure"
+						></v-switch>
+					</v-row>
 				</v-container>
 				<template>
 					<v-alert dense type="info" v-if="testStatus === 0">
@@ -69,11 +75,11 @@
 				></v-btn>
 				<v-btn
 					color="primary"
-					@click="save"
+					@click="saveAndClose"
 					v-text="$t('save')"
 					text
 				></v-btn>
-				<v-btn @click="close" v-text="$t('close')" text></v-btn>
+				<v-btn @click="close" v-text="$t('cancel')" text></v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -87,6 +93,7 @@ export default {
 			show: false,
 			enabled: window.props.download_aria2,
 			rpcHost: '',
+			rpcSecure: false,
 			rpcPort: 6800,
 			rpcPath: '/jsonrpc',
 			rpcToken: '',
@@ -105,6 +112,7 @@ export default {
 		load: function() {
 			this.rpcHost = aria2.getRpcHost()
 			this.rpcPort = aria2.getRpcPort()
+			this.rpcSecure = aria2.getRpcSecure()
 			this.rpcPath = aria2.getRpcPath()
 			this.rpcToken = aria2.getRpcToken()
 			this.downloadPath = aria2.getDownloadPath()
@@ -112,6 +120,7 @@ export default {
 		save: function() {
 			aria2.setRpcHost(this.rpcHost)
 			aria2.setRpcPort(this.rpcPort)
+			aria2.setRpcSecure(this.rpcSecure)
 			aria2.setRpcPath(this.rpcPath)
 			aria2.setRpcToken(this.rpcToken)
 			aria2.setDownloadPath(this.downloadPath)
@@ -120,6 +129,7 @@ export default {
 			this.save()
 
 			this.testStatus = 0
+			aria2.init()
 			aria2.test().then(
 				result => {
 					this.testStatus = 1
@@ -130,6 +140,10 @@ export default {
 					this.testFailedReason = reason
 				}
 			)
+		},
+		saveAndClose: function() {
+			this.save()
+			this.close()
 		},
 		close: function() {
 			this.show = false

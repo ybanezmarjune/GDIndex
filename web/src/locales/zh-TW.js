@@ -7,6 +7,7 @@ export default {
 	mainDrive: '主要硬碟',
 	search: '搜尋',
 	save: '保存',
+	cancel: '取消',
 	close: '關閉',
 	start: '開始',
 	fileUpload: '檔案上傳',
@@ -37,6 +38,7 @@ export default {
 	aria2RPCSettings: 'Aria2 RPC 配置',
 	aria2RPCHost: '主機',
 	aria2RPCPort: '通訊埠',
+	aria2RPCSecure: 'HTTPS',
 	aria2RPCPath: '路徑',
 	aria2RPCToken: '密碼',
 	aria2RPCDownloadPath: '下載路徑',
@@ -44,5 +46,5 @@ export default {
 	aria2Testing: '正在嘗試連接',
 	aria2TestFailed: '連接失敗，原因：{reason}',
 	aria2TestSucceed: '連接成功，Aria2 版本：{version}',
-	$vuetify,
+	$vuetify
 }

@@ -8,6 +8,7 @@ export default {
 	search: '搜索',
 	save: '保存',
 	close: '关闭',
+	cancel: '取消',
 	start: '开始',
 	fileUpload: '上传文件',
 	urlUpload: '从网址上传',
@@ -37,6 +38,7 @@ export default {
 	aria2RPCSettings: 'Aria2 RPC 配置',
 	aria2RPCHost: '主机',
 	aria2RPCPort: '端口',
+	aria2RPCSecure: 'HTTPS',
 	aria2RPCPath: '路径',
 	aria2RPCToken: '密码',
 	aria2RPCDownloadPath: '下载路径',
@@ -44,5 +46,5 @@ export default {
 	aria2Testing: '正在尝试连接',
 	aria2TestFailed: '连接失败，原因：{reason}',
 	aria2TestSucceed: '连接成功，Aria2 版本：{version}',
-	$vuetify,
+	$vuetify
 }
