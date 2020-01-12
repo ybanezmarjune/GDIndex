@@ -3,9 +3,11 @@ export default {
 	modifiedTime: 'Modified Time',
 	fileSize: 'File Size',
 	mainDrive: 'Main Drive',
+	rootDir: 'Root',
 	search: 'Search',
 	save: 'Save',
 	close: 'Close',
+	cancel: 'Cancel',
 	start: 'Start',
 	fileUpload: 'File Upload',
 	urlUpload: 'Upload from url',
@@ -36,6 +38,7 @@ export default {
 	aria2FetchFileFailed: 'Fail fetching files, reason: {failReason}',
 	aria2RPCSettings: 'Aria2 RPC Settings',
 	aria2RPCHost: 'Host',
+	aria2RPCSecure: 'HTTPS',
 	aria2RPCPort: 'Port',
 	aria2RPCPath: 'Path',
 	aria2RPCToken: 'Token',
@@ -43,5 +46,8 @@ export default {
 	aria2TestConnection: 'Test Connection',
 	aria2Testing: 'Testing',
 	aria2TestFailed: 'Connect failed, reason: {reason}',
-	aria2TestSucceed: 'Connect succeed, version: {version}'
+	aria2TestSucceed: 'Connect succeed, version: {version}',
+	aria2HTTPSWarning: `You're using HTTPS while aria2 still using HTTP.
+		Due to browsers limitation, aria2's HTTP requests may be blocked.
+		You can request aria2 via HTTPS or disabling insecure content blocking.`
 }

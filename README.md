@@ -26,12 +26,6 @@
 
 ## Usage
 
-### Simple and automatic way
-
-Go [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch.me/), and follow its instructions.
-
-### Manual way
-
 1. Install [rclone](https://rclone.org/)
 2. Setup your Google Drive: https://rclone.org/drive/
 3. Run `rclone config file` to find your `rclone.conf` location
@@ -62,6 +56,19 @@ Go [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch
 2. Redeploy, now you should see "Download with Aria2" and "Aria2 RPC Settings" beyond file list
 3. Fill your aria2 connection info in "Aria2 RPC Settings"
 4. Go to where you want to download and click "Download with aria2", which will add downloads for you!
+
+#### Solving HTTPS connection issue
+
+While deployed on CloudFlare, the content(html and file info) will be served with HTTPS. However, you may connect your aria2 via HTTP. Fetching HTTP content within HTTPS page is not allowed by browsers. To bypass it, you can:
+
+- use HTTPS connection aria2 by signing certificate
+- allow 'Insecure content' in browser
+
+The latter is recommended. For Chrome, you can allow it by doing:
+
+1. Click the HTTPS lock on the left of URL
+2. Select "Site settings"
+3. Set "Insecure content" to "Allow"
 
 ### Enabling file copy on forbidden
 

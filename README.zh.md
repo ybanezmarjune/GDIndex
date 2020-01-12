@@ -22,12 +22,6 @@
 
 ## 使用教学
 
-### 简单、自动的方法
-
-前往 [https://gdindex-code-builder.glitch.me/](https://gdindex-code-builder.glitch.me/)(英文) 并遵照它的指示。
-
-### 手动的方法
-
 1. 安装 [rclone](https://rclone.org/)
 2. 设定 Google Drive: https://rclone.org/drive/
 3. 执行 `rclone config file` 以找到你的 `rclone.conf`
@@ -58,6 +52,19 @@
 2. 重新部署，此时你应该可以在文件列表上方看到“使用 Aria2 下载”以及“Aria2 RPC 配置”两个按钮
 3. 在“Aria2 RPC 配置”中填写 Aria2 RPC 连接信息
 4. 前往你要下载的文件夹，点击“使用 Aria2 下载”，开始添加下载任务
+
+#### 解决 HTTPS 连接问题
+
+当部署在 CloudFlare 上时，应用的内容（页面及文件信息）都以 HTTPS 方式传送。然而，你可能会使用 HTTP 连接 aria2。但在 HTTPS 页面中获取 HTTP 内容会被浏览器阻止。为了解决此问题，你可以：
+
+- 通过签署证书的方式使用 HTTPS 方式连接 aria2
+- 在浏览器中允许“不安全内容”
+
+我们建议选择后者。在 Chrome 中，你可以：
+
+1. 点击 URL 左边的 HTTPS 锁
+2. 选择“站点设置”
+3. 将“不安全内容”设置为“允许”
 
 ### 启用按需复制
 

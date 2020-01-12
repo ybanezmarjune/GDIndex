@@ -29,7 +29,7 @@
 					</v-row>
 					<v-row>
 						<v-text-field
-							:label="$t('aria2RPCHost')"
+							:label="$t('aria2RPCPath')"
 							v-model="rpcPath"
 						></v-text-field>
 					</v-row>
@@ -45,7 +45,16 @@
 							v-model="downloadPath"
 						></v-text-field>
 					</v-row>
+					<v-row>
+						<v-switch
+							:label="$t('aria2RPCSecure')"
+							v-model="rpcSecure"
+						></v-switch>
+					</v-row>
 				</v-container>
+				<v-alert dense type="warning" v-if="shouldShowAriaHTTPSWarning">
+					{{ $t('aria2HTTPSWarning') }}
+				</v-alert>
 				<template>
 					<v-alert dense type="info" v-if="testStatus === 0">
 						{{ $t('aria2Testing') }}
@@ -69,17 +78,18 @@
 				></v-btn>
 				<v-btn
 					color="primary"
-					@click="save"
+					@click="saveAndClose"
 					v-text="$t('save')"
 					text
 				></v-btn>
-				<v-btn @click="close" v-text="$t('close')" text></v-btn>
+				<v-btn @click="close" v-text="$t('cancel')" text></v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 <script>
 import aria2 from '../aria2'
+import util from '../util'
 
 export default {
 	data() {
@@ -87,16 +97,23 @@ export default {
 			show: false,
 			enabled: window.props.download_aria2,
 			rpcHost: '',
+			rpcSecure: false,
 			rpcPort: 6800,
 			rpcPath: '/jsonrpc',
 			rpcToken: '',
 			downloadPath: '',
 			testStatus: -1,
 			testVersion: '',
-			testFailedReason: ''
+			testFailedReason: '',
+			shouldShowAriaHTTPSWarning: false
 		}
 	},
 	computed: {},
+	watch: {
+		rpcSecure: function(val) {
+			this.shouldShowAriaHTTPSWarning = util.usingHTTPS() && !val
+		}
+	},
 	methods: {
 		onShow: function() {
 			this.load()
@@ -105,13 +122,18 @@ export default {
 		load: function() {
 			this.rpcHost = aria2.getRpcHost()
 			this.rpcPort = aria2.getRpcPort()
+			this.rpcSecure = aria2.getRpcSecure()
 			this.rpcPath = aria2.getRpcPath()
 			this.rpcToken = aria2.getRpcToken()
 			this.downloadPath = aria2.getDownloadPath()
+
+			this.shouldShowAriaHTTPSWarning =
+				util.usingHTTPS() && !this.rpcSecure
 		},
 		save: function() {
 			aria2.setRpcHost(this.rpcHost)
 			aria2.setRpcPort(this.rpcPort)
+			aria2.setRpcSecure(this.rpcSecure)
 			aria2.setRpcPath(this.rpcPath)
 			aria2.setRpcToken(this.rpcToken)
 			aria2.setDownloadPath(this.downloadPath)
@@ -120,6 +142,7 @@ export default {
 			this.save()
 
 			this.testStatus = 0
+			aria2.init()
 			aria2.test().then(
 				result => {
 					this.testStatus = 1
@@ -130,6 +153,10 @@ export default {
 					this.testFailedReason = reason
 				}
 			)
+		},
+		saveAndClose: function() {
+			this.save()
+			this.close()
 		},
 		close: function() {
 			this.show = false

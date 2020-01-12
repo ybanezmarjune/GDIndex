@@ -5,9 +5,11 @@ export default {
 	modifiedTime: '修改时间',
 	fileSize: '文件大小',
 	mainDrive: '主硬盘',
+	rootDir: '根目录',
 	search: '搜索',
 	save: '保存',
 	close: '关闭',
+	cancel: '取消',
 	start: '开始',
 	fileUpload: '上传文件',
 	urlUpload: '从网址上传',
@@ -37,6 +39,7 @@ export default {
 	aria2RPCSettings: 'Aria2 RPC 配置',
 	aria2RPCHost: '主机',
 	aria2RPCPort: '端口',
+	aria2RPCSecure: 'HTTPS',
 	aria2RPCPath: '路径',
 	aria2RPCToken: '密码',
 	aria2RPCDownloadPath: '下载路径',
@@ -44,5 +47,8 @@ export default {
 	aria2Testing: '正在尝试连接',
 	aria2TestFailed: '连接失败，原因：{reason}',
 	aria2TestSucceed: '连接成功，Aria2 版本：{version}',
-	$vuetify,
+	aria2HTTPSWarning: `你正在使用 HTTPS 访问，但 aria2 请求仍然使用
+		HTTP。由于浏览器的限制，aria2 的 HTTP
+		请求可能会被阻止。你可以使用 HTTPS 请求 aria2，或者关闭浏览器的非安全内容阻拦。`,
+	$vuetify
 }

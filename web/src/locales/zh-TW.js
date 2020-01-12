@@ -5,8 +5,10 @@ export default {
 	modifiedTime: '修改時間',
 	fileSize: '檔案大小',
 	mainDrive: '主要硬碟',
+	rootDir: '根目錄',
 	search: '搜尋',
 	save: '保存',
+	cancel: '取消',
 	close: '關閉',
 	start: '開始',
 	fileUpload: '檔案上傳',
@@ -37,6 +39,7 @@ export default {
 	aria2RPCSettings: 'Aria2 RPC 配置',
 	aria2RPCHost: '主機',
 	aria2RPCPort: '通訊埠',
+	aria2RPCSecure: 'HTTPS',
 	aria2RPCPath: '路徑',
 	aria2RPCToken: '密碼',
 	aria2RPCDownloadPath: '下載路徑',
@@ -44,5 +47,8 @@ export default {
 	aria2Testing: '正在嘗試連接',
 	aria2TestFailed: '連接失敗，原因：{reason}',
 	aria2TestSucceed: '連接成功，Aria2 版本：{version}',
-	$vuetify,
+	aria2HTTPSWarning: `你正在使用 HTTPS 訪問，但 aria2 請求仍然使用
+	HTTP。由於瀏覽器的限制，aria2 的 HTTP 請求可能會被阻止。你可以使用
+	HTTPS 請求 aria2，或者關閉瀏覽器的非安全內容阻攔。`,
+	$vuetify
 }
