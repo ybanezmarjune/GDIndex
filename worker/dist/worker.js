@@ -442,20 +442,49 @@ self.props = {
       return this.delete(id);
     }
 
-    async copy(fileId, parentId) {
+    async copy(fileId, parentId, fileName = null) {
       this.initializeClient();
+      const body = {};
 
       if (parentId) {
-        return this.client.post(`files/${fileId}/copy`, {
-          json: {
-            parents: [parentId]
-          }
-        }).json();
-      } else {
-        return this.client.post(`files/${fileId}/copy`, {
-          json: {}
-        }).json();
+        body.parents = [parentId];
       }
+
+      if (fileName) {
+        body.name = fileName;
+      }
+
+      return this.client.post(`files/${fileId}/copy`, {
+        json: body
+      }).json();
+    }
+
+    async existsInParent(name, parentId) {
+      await this.initializeClient();
+
+      const getList = () => {
+        const qs = {
+          includeItemsFromAllDrives: true,
+          supportsAllDrives: true,
+          q: `name = '${name}' and '${parentId}' in parents and trashed = false`,
+          orderBy: 'folder,name,modifiedTime desc',
+          fields: 'files(id,name,mimeType,size,modifiedTime),nextPageToken',
+          pageSize: 1
+        };
+        return this.client.get('files', {
+          qs
+        }).json();
+      };
+
+      const files = [];
+      const resp = await getList();
+      files.push(...resp.files);
+      const multipleFileExists = Boolean(resp.nextPageToken);
+      return {
+        file: files ? files[0] : null,
+        exists: Boolean(files.length),
+        multiple: multipleFileExists
+      };
     }
 
   }
@@ -531,9 +560,22 @@ self.props = {
           r = await gd.download(result.id, request.headers.get('Range'));
         } catch (e) {
           if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
-            // try copy file
-            const copiedFile = await gd.copy(result.id, self.props.copy_parent_id);
-            r = await gd.download(copiedFile.id, request.headers.get('Range'));
+            // add id into copy filename, which prevents conflicting
+            const filename = result.name;
+            const copyFileName = result.id + '-' + filename; // try copy file, but do search first
+
+            const existInfo = await gd.existsInParent(copyFileName, self.props.copy_parent_id);
+            let copiedFileId;
+
+            if (existInfo.exists && !existInfo.multiple) {
+              copiedFileId = existInfo.file.id;
+            } else {
+              // has not copied file, copy it
+              const copiedFile = await gd.copy(result.id, self.props.copy_parent_id, copyFileName);
+              copiedFileId = copiedFile.id;
+            }
+
+            r = await gd.download(copiedFileId, request.headers.get('Range'));
           } else {
             // other error, return it
             return new Response({
