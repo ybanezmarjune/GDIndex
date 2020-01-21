@@ -127,7 +127,15 @@ export default {
 	},
 	methods: {
 		onShow: function() {
-			this.downloadPath = aria2.getDownloadPath() + this.path
+			let baseDownloadPath = aria2.getDownloadPath()
+			if (baseDownloadPath.substr(-1) === '/') {
+				baseDownloadPath = baseDownloadPath.substr(
+					0,
+					baseDownloadPath.length - 1
+				)
+			}
+			const folderDownloadPath = this.path
+			this.downloadPath = `${baseDownloadPath}${folderDownloadPath}`
 			this.show = true
 			this.fetchLinks()
 		},
