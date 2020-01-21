@@ -67,14 +67,17 @@ async function onGet(request) {
 				r = await gd.download(result.id, request.headers.get('Range'))
 			} catch (e) {
 				if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
+					// add id into copy filename, which prevents conflicting
+					const filename = result.name
+					const copyFileName = result.id + '-' + filename
 					// try copy file, but do search first
-					const existInfo = await gd.existsInParent(result.name, self.props.copy_parent_id)
+					const existInfo = await gd.existsInParent(copyFileName, self.props.copy_parent_id)
 					let copiedFileId
 					if (existInfo.exists && !existInfo.multiple) {
 						copiedFileId = existInfo.file.id
 					} else {
 						// has not copied file, copy it
-						const copiedFile = await gd.copy(result.id, self.props.copy_parent_id)
+						const copiedFile = await gd.copy(result.id, self.props.copy_parent_id, copyFileName)
 						copiedFileId = copiedFile.id
 					}
 					r = await gd.download(copiedFileId, request.headers.get('Range'))

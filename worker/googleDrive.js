@@ -163,23 +163,21 @@ class GoogleDrive {
 		if (!id) return null
 		return this.delete(id)
 	}
-	async copy(fileId, parentId) {
+	async copy(fileId, parentId, fileName = null) {
 		this.initializeClient()
+		const body = {}
 		if (parentId) {
-			return this.client
-				.post(`files/${fileId}/copy`, {
-					json: {
-						parents: [parentId]
-					}
-				})
-				.json()
-		} else {
-			return this.client
-				.post(`files/${fileId}/copy`, {
-					json: {}
-				})
-				.json()
+			body.parents = [parentId]
 		}
+		if (fileName) {
+			body.name = fileName
+		}
+
+		return this.client
+			.post(`files/${fileId}/copy`, {
+				json: body
+			})
+			.json()
 	}
 	async existsInParent(name, parentId) {
 		await this.initializeClient()
