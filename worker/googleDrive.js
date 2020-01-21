@@ -74,8 +74,7 @@ class GoogleDrive {
 				supportsAllDrives: true,
 				q: `'${id}' in parents and trashed = false`,
 				orderBy: 'folder,name,modifiedTime desc',
-				fields:
-					'files(id,name,mimeType,size,modifiedTime),nextPageToken',
+				fields: 'files(id,name,mimeType,size,modifiedTime),nextPageToken',
 				pageSize: 1000
 			}
 			if (pageToken) {
@@ -134,19 +133,16 @@ class GoogleDrive {
 	}
 	async upload(parentId, name, file) {
 		await this.initializeClient()
-		const createResp = await this.client.post(
-			'https://www.googleapis.com/upload/drive/v3/files',
-			{
-				qs: {
-					uploadType: 'resumable',
-					supportsAllDrives: true
-				},
-				json: {
-					name,
-					parents: [parentId]
-				}
+		const createResp = await this.client.post('https://www.googleapis.com/upload/drive/v3/files', {
+			qs: {
+				uploadType: 'resumable',
+				supportsAllDrives: true
+			},
+			json: {
+				name,
+				parents: [parentId]
 			}
-		)
+		})
 		const putUrl = createResp.headers.get('Location')
 		return this.client
 			.put(putUrl, {
@@ -167,20 +163,49 @@ class GoogleDrive {
 		if (!id) return null
 		return this.delete(id)
 	}
-	async copy(fileId, parentId) {
+	async copy(fileId, parentId, fileName = null) {
 		this.initializeClient()
+		const body = {}
 		if (parentId) {
+			body.parents = [parentId]
+		}
+		if (fileName) {
+			body.name = fileName
+		}
+
+		return this.client
+			.post(`files/${fileId}/copy`, {
+				json: body
+			})
+			.json()
+	}
+	async existsInParent(name, parentId) {
+		await this.initializeClient()
+		const getList = () => {
+			const qs = {
+				includeItemsFromAllDrives: true,
+				supportsAllDrives: true,
+				q: `name = '${name}' and '${parentId}' in parents and trashed = false`,
+				orderBy: 'folder,name,modifiedTime desc',
+				fields: 'files(id,name,mimeType,size,modifiedTime),nextPageToken',
+				pageSize: 1
+			}
 			return this.client
-				.post(`files/${fileId}/copy`, {
-					json: {
-						parents: [parentId]
-					}
-				}).json()
-		} else {
-			return this.client
-				.post(`files/${fileId}/copy`, {
-					json: {}
-				}).json()
+				.get('files', {
+					qs
+				})
+				.json()
+		}
+
+		const files = []
+		const resp = await getList()
+		files.push(...resp.files)
+		const multipleFileExists = Boolean(resp.nextPageToken)
+
+		return {
+			file: files ? files[0] : null,
+			exists: Boolean(files.length),
+			multiple: multipleFileExists
 		}
 	}
 }
