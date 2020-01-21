@@ -9,6 +9,7 @@ export default {
 	close: 'Close',
 	cancel: 'Cancel',
 	start: 'Start',
+	errorRetrievingFiles: 'Error retrieving files',
 	fileUpload: 'File Upload',
 	urlUpload: 'Upload from url',
 	upload: 'Upload',

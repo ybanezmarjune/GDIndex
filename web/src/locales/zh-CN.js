@@ -11,6 +11,7 @@ export default {
 	close: '关闭',
 	cancel: '取消',
 	start: '开始',
+	errorRetrievingFiles: '获取文件失败',
 	fileUpload: '上传文件',
 	urlUpload: '从网址上传',
 	upload: '上传',
