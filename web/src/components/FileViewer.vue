@@ -249,8 +249,10 @@ export default {
 				const isFolder =
 					f.mimeType === 'application/vnd.google-apps.folder'
 				const isGoogleFile = f.mimeType.includes('vnd.google-apps')
+				const escapedFilename = encodeURIComponent(f.name)
 				const resourcePath =
-					nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '')
+					nodeUrl.resolve(path, escapedFilename) +
+					(isFolder ? '/' : '')
 				const o = {
 					fileName: f.name,
 					modifiedTime: format(
