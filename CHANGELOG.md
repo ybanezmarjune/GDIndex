@@ -16,4 +16,4 @@
 
 ### Worker
 
-- None
+- Prevent duplicated file copies
