@@ -11,6 +11,7 @@ export default {
 	cancel: '取消',
 	close: '關閉',
 	start: '開始',
+	errorRetrievingFiles: '獲取檔案失敗',
 	fileUpload: '檔案上傳',
 	urlUpload: '從網址上傳',
 	upload: '上傳',

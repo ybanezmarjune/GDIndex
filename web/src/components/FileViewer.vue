@@ -34,11 +34,15 @@
 		</v-row>
 		<v-row justify="center">
 			<v-col md="8" lg="6">
+				<v-card class="mx-auto" tile v-if="error">
+					<p id="error-text">{{ error }}</p>
+				</v-card>
 				<v-card
 					class="mx-auto"
 					min-height="400px"
 					tile
 					:loading="loading"
+					v-else
 				>
 					<v-list-item
 						v-for="item in list"
@@ -85,6 +89,7 @@ import { format } from 'date-fns'
 import prettyBytes from 'pretty-bytes'
 import nodeUrl from 'url'
 import nodePath from 'path'
+import i18n from '../i18n'
 import api from '../api'
 import ImageViewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
@@ -164,7 +169,7 @@ export default {
 			renderStart: null,
 			uploadEnabled: window.props.upload,
 			showUploadDialog: false,
-			rootId: ''
+			error: ''
 		}
 	},
 	computed: {
@@ -196,6 +201,8 @@ export default {
 	},
 	methods: {
 		goPath(path, opener) {
+			this.error = ''
+
 			const query = {
 				rootId: this.$route.query.rootId
 			}
@@ -232,7 +239,7 @@ export default {
 				rootId = window.props.default_root_id
 			}
 			this.list = []
-			const { files } = await api
+			const result = await api
 				.post(path, {
 					method: 'POST',
 					qs: {
@@ -240,6 +247,12 @@ export default {
 					}
 				})
 				.json()
+			if (!result || typeof result.files === 'undefined') {
+				this.error = i18n.t('errorRetrievingFiles')
+				return
+			}
+
+			const files = result.files
 			if (renderStart !== this.renderStart) {
 				// User had initiated other folder navigation request
 				return
@@ -377,5 +390,12 @@ export default {
 }
 #actions > button {
 	margin-right: 10px;
+}
+
+#error-text {
+	font-size: 30px;
+	color: rgba(0, 0, 0, 0.3);
+	text-align: center;
+	padding: 10px 0;
 }
 </style>
