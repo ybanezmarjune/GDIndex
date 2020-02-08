@@ -44,5 +44,7 @@ export default {
     aria2TestSucceed: 'Connect succeed, version: {version}',
     aria2HTTPSWarning: `You're using HTTPS while aria2 still using HTTP.
 		Due to browsers limitation, aria2's HTTP requests may be blocked.
-		You can request aria2 via HTTPS or disabling insecure content blocking.`
+		You can request aria2 via HTTPS or disabling insecure content blocking.`,
+    fetchConcurrency: 'Fetch Concurrency',
+    fetchRetryTimes: 'Fetch retry times'
 };

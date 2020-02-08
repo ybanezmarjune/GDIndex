@@ -27,6 +27,12 @@
                     <v-row>
                         <v-switch :label="$t('aria2RPCSecure')" v-model="rpcSecure"></v-switch>
                     </v-row>
+                    <v-row>
+                        <v-text-field :label="$t('fetchConcurrency')" v-model="fetchConcurrency"></v-text-field>
+                    </v-row>
+                    <v-row>
+                        <v-text-field :label="$t('fetchRetryTimes')" v-model="fetchRetryTimes"></v-text-field>
+                    </v-row>
                 </v-container>
                 <v-alert dense type="warning" v-if="shouldShowAriaHTTPSWarning">
                     {{ $t('aria2HTTPSWarning') }}
@@ -66,6 +72,8 @@ export default {
             rpcPath: '/jsonrpc',
             rpcToken: '',
             downloadPath: '',
+            fetchConcurrency: 5,
+            fetchRetryTimes: 3,
             testStatus: -1,
             testVersion: '',
             testFailedReason: '',
@@ -90,6 +98,8 @@ export default {
             this.rpcPath = aria2.getRpcPath();
             this.rpcToken = aria2.getRpcToken();
             this.downloadPath = aria2.getDownloadPath();
+            this.fetchConcurrency = aria2.getFetchConcurrency();
+            this.fetchRetryTimes = aria2.getFetchRetryTimes();
 
             this.shouldShowAriaHTTPSWarning = util.usingHTTPS() && !this.rpcSecure;
         },
@@ -100,6 +110,8 @@ export default {
             aria2.setRpcPath(this.rpcPath);
             aria2.setRpcToken(this.rpcToken);
             aria2.setDownloadPath(this.downloadPath);
+            aria2.setFetchConcurrency(this.fetchConcurrency);
+            aria2.setFetchRetryTimes(this.fetchRetryTimes);
         },
         test: function() {
             this.save();

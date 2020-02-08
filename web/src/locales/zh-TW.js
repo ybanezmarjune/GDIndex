@@ -47,5 +47,7 @@ export default {
     aria2HTTPSWarning: `你正在使用 HTTPS 訪問，但 aria2 請求仍然使用
 	HTTP。由於瀏覽器的限制，aria2 的 HTTP 請求可能會被阻止。你可以使用
 	HTTPS 請求 aria2，或者關閉瀏覽器的非安全內容阻攔。`,
+    fetchConcurrency: '文件獲取並行數',
+    fetchRetryTimes: '文件獲取重試數',
     $vuetify
 };

@@ -179,10 +179,19 @@ export default {
             this.status = 1;
             this.fetchRemainingFolderCount = 1;
 
+            const concurrency = aria2.getFetchConcurrency();
+            const retryTimes = aria2.getFetchRetryTimes();
             let totalDownloadSize = 0;
-            const pathItems = await util.getPathItems(this.path, this.rootId, this.recursive, 3, 3, remaining => {
-                this.fetchRemainingFolderCount = remaining;
-            });
+            const pathItems = await util.getPathItems(
+                this.path,
+                this.rootId,
+                this.recursive,
+                concurrency,
+                retryTimes,
+                remaining => {
+                    this.fetchRemainingFolderCount = remaining;
+                }
+            );
 
             const filterRecursive = (obj, condition) => {
                 const results = [];
