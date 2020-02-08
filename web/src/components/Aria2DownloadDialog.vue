@@ -177,6 +177,7 @@ export default {
         fetchLinks: async function() {
             this.canOperate = false;
             this.status = 1;
+            this.fetchRemainingFolderCount = 1;
 
             let totalDownloadSize = 0;
             const pathItems = await util.getPathItems(this.path, this.rootId, this.recursive, 3, 3, remaining => {
