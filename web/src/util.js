@@ -9,7 +9,7 @@ const usingHTTPS = () => {
 };
 
 const replaceSpecialCharacter = segment => {
-    return segment.replace('/', '$_');
+    return segment.replace('/', '$_').replace('#', '%23');
 };
 
 const getFileUrl = (path, rootId) => {
