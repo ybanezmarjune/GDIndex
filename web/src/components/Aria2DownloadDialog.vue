@@ -177,7 +177,6 @@ export default {
         fetchLinks: async function() {
             this.canOperate = false;
             this.status = 1;
-            this.fetchRemainingFolderCount = 1;
 
             const concurrency = aria2.getFetchConcurrency();
             const retryTimes = aria2.getFetchRetryTimes();

@@ -159,6 +159,7 @@ const getPathItems = (path, rootId, recursive = true, concurrency = 3, retry = 3
             }
         };
 
+        updateProgress();
         scheduleTasks();
     });
 };
