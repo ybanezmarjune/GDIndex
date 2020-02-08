@@ -8,6 +8,10 @@ const usingHTTPS = () => {
     return window.location.protocol === 'https:';
 };
 
+const replaceSpecialCharacter = segment => {
+    return segment.replace('/', '$_');
+};
+
 const getFileUrl = (path, rootId) => {
     let u = nodeUrl.resolve(
         window.props.api,
@@ -44,7 +48,7 @@ const listItems = async (path, rootId) => {
     files = files.map(f => {
         f.mimeType = f.mimeType.replace('; charset=utf-8', '');
         const isFolder = f.mimeType === 'application/vnd.google-apps.folder';
-        let resourcePath = resolvePath(path, f.name) + (isFolder ? '/' : '');
+        let resourcePath = resolvePath(path, replaceSpecialCharacter(f.name)) + (isFolder ? '/' : '');
         const url = getFileUrl(resourcePath, rootId);
         const o = {
             fileName: f.name,
@@ -162,6 +166,7 @@ const getPathItems = (path, rootId, recursive = true, concurrency = 3, retry = 3
 export default {
     usingHTTPS,
     getPathItems,
+    replaceSpecialCharacter,
     shouldShowAriaHTTPSWarning: () => {
         return usingHTTPS() && !aria2.getRpcSecure();
     }

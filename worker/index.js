@@ -1,9 +1,9 @@
-import mime from 'mime'
-import GoogleDrive from './googleDrive'
+import mime from 'mime';
+import GoogleDrive from './googleDrive';
 
-const gd = new GoogleDrive(self.props)
+const gd = new GoogleDrive(self.props);
 const resourceBaseUrl =
-	self.props.resource_base_url || 'https://raw.githubusercontent.com/CodeingBoy/GDIndex/master/web/dist/'
+    self.props.resource_base_url || 'https://raw.githubusercontent.com/CodeingBoy/GDIndex/master/web/dist/';
 
 const HTML = `
 <!DOCTYPE html>
@@ -24,235 +24,235 @@ const HTML = `
 }<\/script>
 <div id=app></div><script src="/~_~_gdindex/resources/js/app.js"><\/script>
 </body>
-</html>`
+</html>`;
 
 async function onGet(request) {
-	let { pathname: path } = request
-	const rootId = request.searchParams.get('rootId') || self.props.default_root_id
-	if (path.startsWith('/~_~_gdindex/resources/')) {
-		const remain = path.replace('/~_~_gdindex/resources/', '')
-		const r = await fetch(`${resourceBaseUrl}${remain}`)
-		return new Response(r.body, {
-			headers: {
-				'Content-Type': mime.getType(remain) + '; charset=utf-8',
-				'Cache-Control': 'max-age=600'
-			}
-		})
-	} else if (path === '/~_~_gdindex/drives') {
-		return new Response(JSON.stringify(await gd.listDrive()), {
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-	} else if (path.substr(-1) === '/' || path.startsWith('/~viewer')) {
-		return new Response(HTML, {
-			headers: {
-				'Content-Type': 'text/html; charset=utf-8'
-			}
-		})
-	} else {
-		const result = await gd.getMetaByPath(path, rootId)
-		if (!result) {
-			return new Response('null', {
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				status: 404
-			})
-		}
-		const isGoogleApps = result.mimeType.includes('vnd.google-apps')
-		if (!isGoogleApps) {
-			let r
-			try {
-				r = await gd.download(result.id, request.headers.get('Range'))
-			} catch (e) {
-				if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
-					// add id into copy filename, which prevents conflicting
-					const filename = result.name
-					const copyFileName = result.id + '-' + filename
-					// try copy file, but do search first
-					const existInfo = await gd.existsInParent(copyFileName, self.props.copy_parent_id)
-					let copiedFileId
-					if (existInfo.exists && !existInfo.multiple) {
-						copiedFileId = existInfo.file.id
-					} else {
-						// has not copied file, copy it
-						const copiedFile = await gd.copy(result.id, self.props.copy_parent_id, copyFileName)
-						copiedFileId = copiedFile.id
-					}
-					r = await gd.download(copiedFileId, request.headers.get('Range'))
-				} else {
-					// other error, return it
-					return new Response(
-						{
-							error: e
-						},
-						{
-							status: r.status
-						}
-					)
-				}
-			}
+    let { pathname: path } = request;
+    const rootId = request.searchParams.get('rootId') || self.props.default_root_id;
+    if (path.startsWith('/~_~_gdindex/resources/')) {
+        const remain = path.replace('/~_~_gdindex/resources/', '');
+        const r = await fetch(`${resourceBaseUrl}${remain}`);
+        return new Response(r.body, {
+            headers: {
+                'Content-Type': mime.getType(remain) + '; charset=utf-8',
+                'Cache-Control': 'max-age=600'
+            }
+        });
+    } else if (path === '/~_~_gdindex/drives') {
+        return new Response(JSON.stringify(await gd.listDrive()), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    } else if (path.substr(-1) === '/' || path.startsWith('/~viewer')) {
+        return new Response(HTML, {
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8'
+            }
+        });
+    } else {
+        const result = await gd.getMetaByPath(path, rootId);
+        if (!result) {
+            return new Response('null', {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                status: 404
+            });
+        }
+        const isGoogleApps = result.mimeType.includes('vnd.google-apps');
+        if (!isGoogleApps) {
+            let r;
+            try {
+                r = await gd.download(result.id, request.headers.get('Range'));
+            } catch (e) {
+                if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
+                    // add id into copy filename, which prevents conflicting
+                    const filename = result.name;
+                    const copyFileName = result.id + '-' + filename;
+                    // try copy file, but do search first
+                    const existInfo = await gd.existsInParent(copyFileName, self.props.copy_parent_id);
+                    let copiedFileId;
+                    if (existInfo.exists && !existInfo.multiple) {
+                        copiedFileId = existInfo.file.id;
+                    } else {
+                        // has not copied file, copy it
+                        const copiedFile = await gd.copy(result.id, self.props.copy_parent_id, copyFileName);
+                        copiedFileId = copiedFile.id;
+                    }
+                    r = await gd.download(copiedFileId, request.headers.get('Range'));
+                } else {
+                    // other error, return it
+                    return new Response(
+                        {
+                            error: e
+                        },
+                        {
+                            status: r.status
+                        }
+                    );
+                }
+            }
 
-			const h = new Headers(r.headers)
-			h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`)
-			return new Response(r.body, {
-				status: r.status,
-				headers: h
-			})
-		} else {
-			return Response.redirect(result.webViewLink, 302)
-		}
-	}
+            const h = new Headers(r.headers);
+            h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`);
+            return new Response(r.body, {
+                status: r.status,
+                headers: h
+            });
+        } else {
+            return Response.redirect(result.webViewLink, 302);
+        }
+    }
 }
 async function onPost(request) {
-	let { pathname: path } = request
-	const rootId = request.searchParams.get('rootId') || self.props.default_root_id
-	if (path.substr(-1) === '/') {
-		return new Response(JSON.stringify(await gd.listFolderByPath(path, rootId)), {
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-	} else {
-		const result = await gd.getMetaByPath(path, rootId)
-		if (!result) {
-			return new Response('null', {
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				status: 404
-			})
-		}
-		const isGoogleApps = result.mimeType.includes('vnd.google-apps')
-		if (!isGoogleApps) {
-			const r = await gd.download(result.id, request.headers.get('Range'))
-			const h = new Headers(r.headers)
-			h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`)
-			return new Response(r.body, {
-				status: r.status,
-				headers: h
-			})
-		} else {
-			return Response.redirect(result.webViewLink, 302)
-		}
-	}
+    let { pathname: path } = request;
+    const rootId = request.searchParams.get('rootId') || self.props.default_root_id;
+    if (path.substr(-1) === '/') {
+        return new Response(JSON.stringify(await gd.listFolderByPath(path, rootId)), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    } else {
+        const result = await gd.getMetaByPath(path, rootId);
+        if (!result) {
+            return new Response('null', {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                status: 404
+            });
+        }
+        const isGoogleApps = result.mimeType.includes('vnd.google-apps');
+        if (!isGoogleApps) {
+            const r = await gd.download(result.id, request.headers.get('Range'));
+            const h = new Headers(r.headers);
+            h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`);
+            return new Response(r.body, {
+                status: r.status,
+                headers: h
+            });
+        } else {
+            return Response.redirect(result.webViewLink, 302);
+        }
+    }
 }
 async function onPut(request) {
-	let { pathname: path } = request
-	if (path.substr(-1) === '/') {
-		return new Response(null, {
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			status: 405
-		})
-	}
-	const url = request.searchParams.get('url')
-	let fileBody
-	if (url) {
-		const u = new URL(url)
-		const Referer = u.href
-		const Origin = u.protocol + '//' + u.host
-		fileBody = (
-			await fetch(url, {
-				headers: {
-					Referer,
-					Origin
-				}
-			})
-		).body
-	} else {
-		fileBody = request.body
-	}
-	const tok = path.split('/')
-	const name = tok.pop()
-	const parent = tok.join('/')
-	const rootId = request.searchParams.get('rootId') || self.props.default_root_id
-	return new Response(JSON.stringify(await gd.uploadByPath(parent, name, fileBody, rootId)), {
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	})
+    let { pathname: path } = request;
+    if (path.substr(-1) === '/') {
+        return new Response(null, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            status: 405
+        });
+    }
+    const url = request.searchParams.get('url');
+    let fileBody;
+    if (url) {
+        const u = new URL(url);
+        const Referer = u.href;
+        const Origin = u.protocol + '//' + u.host;
+        fileBody = (
+            await fetch(url, {
+                headers: {
+                    Referer,
+                    Origin
+                }
+            })
+        ).body;
+    } else {
+        fileBody = request.body;
+    }
+    const tok = path.split('/');
+    const name = tok.pop();
+    const parent = tok.join('/');
+    const rootId = request.searchParams.get('rootId') || self.props.default_root_id;
+    return new Response(JSON.stringify(await gd.uploadByPath(parent, name, fileBody, rootId)), {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
 }
 
 function unauthorized() {
-	return new Response('Unauthorized', {
-		headers: {
-			'WWW-Authenticate': 'Basic realm="goindex"',
-			'Access-Control-Allow-Origin': '*'
-		},
-		status: 401
-	})
+    return new Response('Unauthorized', {
+        headers: {
+            'WWW-Authenticate': 'Basic realm="goindex"',
+            'Access-Control-Allow-Origin': '*'
+        },
+        status: 401
+    });
 }
 
 function parseBasicAuth(auth) {
-	try {
-		return atob(auth.split(' ').pop()).split(':')
-	} catch (e) {
-		return []
-	}
+    try {
+        return atob(auth.split(' ').pop()).split(':');
+    } catch (e) {
+        return [];
+    }
 }
 
 function doBasicAuth(request) {
-	const auth = request.headers.get('Authorization')
-	if (!auth || !/^Basic [A-Za-z0-9._~+/-]+=*$/i.test(auth)) {
-		return false
-	}
-	const [user, pass] = parseBasicAuth(auth)
-	return user === self.props.user && pass === self.props.pass
+    const auth = request.headers.get('Authorization');
+    if (!auth || !/^Basic [A-Za-z0-9._~+/-]+=*$/i.test(auth)) {
+        return false;
+    }
+    const [user, pass] = parseBasicAuth(auth);
+    return user === self.props.user && pass === self.props.pass;
 }
 async function handleRequest(request) {
-	if (request.method === 'OPTIONS')
-		// allow preflight request
-		return new Response('', {
-			status: 200,
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': '*',
-				'Access-Control-Allow-Methods': 'GET, POST, PUT, HEAD, OPTIONS'
-			}
-		})
-	if (self.props.auth && !doBasicAuth(request)) {
-		return unauthorized()
-	}
-	request = Object.assign({}, request, new URL(request.url))
-	request.pathname = request.pathname
-		.split('/')
-		.map(decodeURIComponent)
-		.map(decodeURIComponent) // for some super special cases, browser will force encode it...   eg: +αあるふぁきゅん。 - +♂.mp3
-		.join('/')
-	let resp
-	if (request.method === 'GET') resp = await onGet(request)
-	else if (request.method === 'POST') resp = await onPost(request)
-	else if (request.method === 'PUT') resp = await onPut(request)
-	else
-		resp = new Response('', {
-			status: 405
-		})
-	const obj = Object.create(null)
-	for (const [k, v] of resp.headers.entries()) {
-		obj[k] = v
-	}
-	return new Response(resp.body, {
-		status: resp.status,
-		statusText: resp.statusText,
-		headers: Object.assign(obj, {
-			'Access-Control-Allow-Origin': '*'
-		})
-	})
+    if (request.method === 'OPTIONS')
+        // allow preflight request
+        return new Response('', {
+            status: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, HEAD, OPTIONS'
+            }
+        });
+    if (self.props.auth && !doBasicAuth(request)) {
+        return unauthorized();
+    }
+    request = Object.assign({}, request, new URL(request.url));
+    request.pathname = request.pathname
+        .split('/')
+        .map(decodeURIComponent)
+        .map(decodeURIComponent) // for some super special cases, browser will force encode it...   eg: +αあるふぁきゅん。 - +♂.mp3
+        .join('/');
+    let resp;
+    if (request.method === 'GET') resp = await onGet(request);
+    else if (request.method === 'POST') resp = await onPost(request);
+    else if (request.method === 'PUT') resp = await onPut(request);
+    else
+        resp = new Response('', {
+            status: 405
+        });
+    const obj = Object.create(null);
+    for (const [k, v] of resp.headers.entries()) {
+        obj[k] = v;
+    }
+    return new Response(resp.body, {
+        status: resp.status,
+        statusText: resp.statusText,
+        headers: Object.assign(obj, {
+            'Access-Control-Allow-Origin': '*'
+        })
+    });
 }
 
 addEventListener('fetch', event => {
-	event.respondWith(
-		handleRequest(event.request).catch(err => {
-			console.error(err)
-			new Response(JSON.stringify(err.stack), {
-				status: 500,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-		})
-	)
-})
+    event.respondWith(
+        handleRequest(event.request).catch(err => {
+            console.error(err);
+            new Response(JSON.stringify(err.stack), {
+                status: 500,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        })
+    );
+});
