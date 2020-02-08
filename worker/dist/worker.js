@@ -370,7 +370,7 @@ self.props = {
     }
 
     async getId(path, rootId = 'root') {
-      const toks = path.split('/').filter(Boolean);
+      const toks = path.split('/').map(t => t.replace('$_', '/')).filter(Boolean);
       let id = rootId;
 
       for (const tok of toks) {
