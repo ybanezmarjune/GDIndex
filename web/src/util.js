@@ -22,6 +22,16 @@ const getFileUrl = (path, rootId) => {
     return u;
 };
 
+const resolvePath = (base, p) => {
+    if (base.slice(-1) === '/') {
+        base = base.substr(0, base.length - 1);
+    }
+    if (p.charAt(0) === '/') {
+        p = p.substr(1);
+    }
+    return `${base}/${p}`;
+};
+
 const listItems = async (path, rootId) => {
     let { files } = await api
         .post(path, {
@@ -34,7 +44,7 @@ const listItems = async (path, rootId) => {
     files = files.map(f => {
         f.mimeType = f.mimeType.replace('; charset=utf-8', '');
         const isFolder = f.mimeType === 'application/vnd.google-apps.folder';
-        let resourcePath = nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '');
+        let resourcePath = resolvePath(path, f.name) + (isFolder ? '/' : '');
         const url = getFileUrl(resourcePath, rootId);
         const o = {
             fileName: f.name,
