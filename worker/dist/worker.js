@@ -10,8 +10,8 @@ self.props = {
 	upload: false,
     export_url: false,
     download_aria2: false,
-    copy_on_forbidden: false,
-    copy_parent_id: ''
+    copy_on_forbidden: true,
+    copy_parent_id: '14DrzFUrghzW5lep57Kg92_T2p2gmU-Nw'
 };
 (function () {
   'use strict';
